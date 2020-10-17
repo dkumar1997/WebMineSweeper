@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>MineSweeper</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"
+    />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  </head>
+  <body>
+    <div class="menu">
+      <div class="menuButton" data-size="4x4"></div>
+      <div class="menuButton" data-size="5x5"></div>
+      <div class="menuButton" data-size="6x6"></div>
+      <div class="menuButton" data-size="7x7"></div>
+      <div class="menuButton" data-size="8x8"></div>
+      <div class="menuButton" data-size="9x9"></div>
+    </div>
+    <div class="gridwrapper">
+      <div class="grid"></div>
+    </div>
+    <div class="status">Number of moves: <span class="moveCount">0</span></div>
+    <div id="overlay">
+      <div id="overlayin">
+        <p class="big glow">Congratulations, you won!!!</p>
+        <p class="darker">
+          It took you <span class="moveCount">0</span> moves.
+        </p>
+        <p class="darker">Click anywhere to start a new game.</p>
+      </div>
+    </div>
+
+    <script src="msgame.js"></script>
+  </body>
+</html>
