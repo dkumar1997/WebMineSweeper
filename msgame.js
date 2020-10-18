@@ -1,7 +1,7 @@
 "use strict";
 window.addEventListener("load", main);
 
-let MSGame = (function () {
+let MSGame = (function() {
   // private constants
   const STATE_HIDDEN = "hidden";
   const STATE_SHOWN = "shown";
@@ -42,7 +42,7 @@ let MSGame = (function () {
       this.arr = array2d(nrows, ncols, () => ({
         mine: false,
         state: STATE_HIDDEN,
-        count: 0,
+        count: 0
       }));
     }
 
@@ -175,7 +175,7 @@ let MSGame = (function () {
         ncols: this.ncols,
         nmarked: this.nmarked,
         nuncovered: this.nuncovered,
-        nmines: this.nmines,
+        nmines: this.nmines
       };
     }
   }
@@ -194,13 +194,11 @@ function prepare_dom(game, s) {
       card_click_cb(game, s, i);
     });
     card.addEventListener("contextmenu", () => {
-      tapholdHandler(game, s, i);
+      tapholdHandler(game, card, s, i);
     });
 
     grid.appendChild(card);
   }
-
-  $(".card").on("taphold", tapholdHandler);
 }
 function render(s) {
   const grid = document.querySelector(".grid");
@@ -215,7 +213,6 @@ function render(s) {
       card.style.display = "block";
       if (s.onoff[ind] == "H") {
         card.classList.add("hidden");
-        console.log(s.onoff[ind]);
       } else if (s.onoff[ind] == "F") {
         card.classList.add("flag");
       } else if (s.onoff[ind] == "M") {
@@ -226,14 +223,18 @@ function render(s) {
       }
     }
   }
-  document.querySelectorAll(".moveCount").forEach((e) => {
+  document.querySelectorAll(".moveCount").forEach(e => {
     e.textContent = String(s.moves);
   });
 }
-function button_cb(s, rows, cols) {
-  s.ncols = cols;
-  s.nrows = rows;
-  render(s);
+function button_cb(rows, cols, mines) {
+  let game = new MSGame();
+  game.init(rows, cols, mines);
+  let state = game.getStatus();
+  state.onoff = flattenArray(game.getRendering());
+  document.querySelectorAll(".card").forEach(e => e.parentNode.removeChild(e));
+  prepare_dom(game, state);
+  render(state);
 }
 function flattenArray(arr) {
   let finalArray = [];
@@ -254,30 +255,43 @@ function card_click_cb(game, s, ind) {
   const row = Math.floor(ind / s.ncols);
 
   game.uncover(row, col);
+  s = game.getStatus();
   s.onoff = flattenArray(game.getRendering());
   render(s);
   // check if we won and activate overlay if we did
-  if (s.onoff.reduce((res, l) => res && !l, true)) {
+
+  console.log(s);
+  if (s.done == true && s.exploded == false) {
     document.querySelector("#overlay").classList.toggle("active");
+    document.querySelector(".glow").innerHTML = "Congratulations, you won!!!";
+  } else if (s.done == true && s.exploded == true) {
+    document.querySelector("#overlay").classList.toggle("active");
+    document.querySelector(".glow").innerHTML =
+      "Sorry, you lost. You hit a bomb";
   }
 }
-function tapholdHandler(game, s, ind) {
+function tapholdHandler(game, card_div, s, ind) {
   const col = ind % s.ncols;
   const row = Math.floor(ind / s.ncols);
-  game.mark(row,col);
+  card_div.classList.toggle("flag");
+  game.mark(row, col);
+  s = game.getStatus();
   s.onoff = flattenArray(game.getRendering());
   render(s);
-  game.mark()
 }
 
 function main() {
-  let game = new MSGame();
+  document.querySelector("#overlay").addEventListener("click", () => {
+    document.querySelector("#overlay").classList.remove("active");
+    button_cb(8, 10, 10);
+  });
 
-  game.init(8, 10, 10);
-  let state = game.getStatus();
-  state.onoff = flattenArray(game.getRendering());
-
-  console.log("end");
-  prepare_dom(game, state);
-  button_cb(state, 8, 10);
+  button_cb(8, 10, 10);
+  // $(function() {
+  //   $(".card").on("click", function() {
+  //     const ind = $(this).attr("data-cardInd");
+  //     console.log("hello");
+  //     card_click_cb(game, state, ind);
+  //   });
+  // });
 }
