@@ -191,16 +191,17 @@ function prepare_dom(game, s) {
     card.className = "card";
     card.setAttribute("data-cardInd", i);
     card.addEventListener("click", () => {
-      card_click_cb(game, s, i);
+      card_click_cb(game, i);
     });
     card.addEventListener("contextmenu", () => {
-      tapholdHandler(game, card, s, i);
+      tapholdHandler(game, card, i);
     });
 
     grid.appendChild(card);
   }
 }
 function render(s) {
+  console.log(s);
   const grid = document.querySelector(".grid");
   grid.style.gridTemplateColumns = `repeat(${s.ncols}, 1fr)`;
   console.log(grid.children.length);
@@ -223,8 +224,8 @@ function render(s) {
       }
     }
   }
-  document.querySelectorAll(".moveCount").forEach(e => {
-    e.textContent = String(s.moves);
+  document.querySelectorAll(".flagCount").forEach(e => {
+    e.textContent = String(s.nmines - s.nmarked);
   });
 }
 function button_cb(rows, cols, mines) {
@@ -251,7 +252,8 @@ function flattenArray(arr) {
   console.log(perArray);
   return perArray;
 }
-function card_click_cb(game, s, ind) {
+function card_click_cb(game, ind) {
+  let s = game.getStatus();
   const col = ind % s.ncols;
   const row = Math.floor(ind / s.ncols);
 
@@ -270,15 +272,19 @@ function card_click_cb(game, s, ind) {
       "Sorry, you lost. You hit a bomb";
   }
 }
-function tapholdHandler(game, card_div, s, ind) {
+function tapholdHandler(game, card_div, ind) {
+  let s = game.getStatus();
   const col = ind % s.ncols;
   const row = Math.floor(ind / s.ncols);
   card_div.classList.toggle("flag");
+  console.log("before flag state", s);
   game.mark(row, col);
   s = game.getStatus();
+  console.log("after flag state", s);
   s.onoff = flattenArray(game.getRendering());
   render(s);
 }
+function setTime() {}
 
 function main() {
   document.querySelector("#overlay").addEventListener("click", () => {
@@ -294,6 +300,7 @@ function main() {
     button.innerHTML = button.getAttribute("name");
     button.addEventListener("click", button_cb.bind(null, rows, cols, mines));
   });
+
   // got to ask what does the bind function do?
   button_cb(8, 10, 10);
   // $(function() {
