@@ -185,7 +185,7 @@ let MSGame = (function() {
 
 function prepare_dom(game, s) {
   const grid = document.querySelector(".grid");
-  const nCards = 18 * 14; // max grid size
+  const nCards = 14 * 18; // max grid size
   for (let i = 0; i < nCards; i++) {
     const card = document.createElement("div");
     card.className = "card";
@@ -231,6 +231,7 @@ function button_cb(rows, cols, mines) {
   let game = new MSGame();
   game.init(rows, cols, mines);
   let state = game.getStatus();
+  console.log(state);
   state.onoff = flattenArray(game.getRendering());
   document.querySelectorAll(".card").forEach(e => e.parentNode.removeChild(e));
   prepare_dom(game, state);
@@ -260,7 +261,6 @@ function card_click_cb(game, s, ind) {
   render(s);
   // check if we won and activate overlay if we did
 
-  console.log(s);
   if (s.done == true && s.exploded == false) {
     document.querySelector("#overlay").classList.toggle("active");
     document.querySelector(".glow").innerHTML = "Congratulations, you won!!!";
@@ -285,7 +285,16 @@ function main() {
     document.querySelector("#overlay").classList.remove("active");
     button_cb(8, 10, 10);
   });
-
+  document.querySelectorAll(".menuButton").forEach(button => {
+    let rows, cols, mines;
+    [rows, cols, mines, name] = button
+      .getAttribute("data-size")
+      .split("x")
+      .map(s => Number(s));
+    button.innerHTML = button.getAttribute("name");
+    button.addEventListener("click", button_cb.bind(null, rows, cols, mines));
+  });
+  // got to ask what does the bind function do?
   button_cb(8, 10, 10);
   // $(function() {
   //   $(".card").on("click", function() {
