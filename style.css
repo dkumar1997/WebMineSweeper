@@ -58,10 +58,20 @@ body {
 
 .menu {
   display: flex;
-  justify-content: center;
-  margin-bottom: 0.5em;
-  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 10px auto;
+
   align-items: center;
+  width: 40%;
+}
+.menu .flagarea,
+.menu .timerarea {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.menuimage {
+  width: 2rem;
 }
 
 .menuButton {

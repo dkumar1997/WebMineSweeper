@@ -1,6 +1,14 @@
 "use strict";
 window.addEventListener("load", main);
 
+let seconds = 0;
+const countDownArea = document.getElementById("timer");
+let intervalID = 0;
+function incrementTime() {
+  seconds+=1
+  countDownArea.innerText = seconds;
+}
+
 let MSGame = (function() {
   // private constants
   const STATE_HIDDEN = "hidden";
@@ -183,7 +191,7 @@ let MSGame = (function() {
   return _MSGame;
 })();
 
-function prepare_dom(game, s) {
+function prepare_dom(game) {
   const grid = document.querySelector(".grid");
   const nCards = 14 * 18; // max grid size
   for (let i = 0; i < nCards; i++) {
@@ -201,10 +209,10 @@ function prepare_dom(game, s) {
   }
 }
 function render(s) {
-  console.log(s);
+  console.log(s, "this is in render");
   const grid = document.querySelector(".grid");
   grid.style.gridTemplateColumns = `repeat(${s.ncols}, 1fr)`;
-  console.log(grid.children.length);
+  
   for (let i = 0; i < grid.children.length; i++) {
     const card = grid.children[i];
     const ind = Number(card.getAttribute("data-cardInd"));
@@ -229,13 +237,15 @@ function render(s) {
   });
 }
 function button_cb(rows, cols, mines) {
+  clearInterval(intervalID);
+  seconds = 0;
+  countDownArea.innerText=seconds;
   let game = new MSGame();
   game.init(rows, cols, mines);
   let state = game.getStatus();
-  console.log(state);
   state.onoff = flattenArray(game.getRendering());
   document.querySelectorAll(".card").forEach(e => e.parentNode.removeChild(e));
-  prepare_dom(game, state);
+  prepare_dom(game);
   render(state);
 }
 function flattenArray(arr) {
@@ -249,27 +259,44 @@ function flattenArray(arr) {
       perArray.push(finalArray[i][j]);
     }
   }
-  console.log(perArray);
   return perArray;
 }
 function card_click_cb(game, ind) {
   let s = game.getStatus();
   const col = ind % s.ncols;
   const row = Math.floor(ind / s.ncols);
+  
+  
+  let initialMoveCheck = false;
+  if(s.nuncovered == 0){
+    initialMoveCheck = true;
+  }
+  else{
+    initialMoveCheck = false;
+  }
 
   game.uncover(row, col);
   s = game.getStatus();
   s.onoff = flattenArray(game.getRendering());
+  
+
+  if(initialMoveCheck){
+    game.nmarked = 0;
+    s.nmarked = 0;
+    document.querySelectorAll(".card").forEach(card=>card.classList.remove("flag"));
+    intervalID = setInterval(incrementTime, 1000);
+  }
   render(s);
   // check if we won and activate overlay if we did
-
   if (s.done == true && s.exploded == false) {
     document.querySelector("#overlay").classList.toggle("active");
     document.querySelector(".glow").innerHTML = "Congratulations, you won!!!";
+    clearInterval(intervalID);
   } else if (s.done == true && s.exploded == true) {
     document.querySelector("#overlay").classList.toggle("active");
     document.querySelector(".glow").innerHTML =
       "Sorry, you lost. You hit a bomb";
+    clearInterval(intervalID);
   }
 }
 function tapholdHandler(game, card_div, ind) {
@@ -277,14 +304,15 @@ function tapholdHandler(game, card_div, ind) {
   const col = ind % s.ncols;
   const row = Math.floor(ind / s.ncols);
   card_div.classList.toggle("flag");
-  console.log("before flag state", s);
+  
   game.mark(row, col);
   s = game.getStatus();
-  console.log("after flag state", s);
+  console.log(s, "this is in tap and hold");
   s.onoff = flattenArray(game.getRendering());
   render(s);
 }
-function setTime() {}
+
+
 
 function main() {
   document.querySelector("#overlay").addEventListener("click", () => {
@@ -301,13 +329,9 @@ function main() {
     button.addEventListener("click", button_cb.bind(null, rows, cols, mines));
   });
 
+  
+
   // got to ask what does the bind function do?
   button_cb(8, 10, 10);
-  // $(function() {
-  //   $(".card").on("click", function() {
-  //     const ind = $(this).attr("data-cardInd");
-  //     console.log("hello");
-  //     card_click_cb(game, state, ind);
-  //   });
-  // });
+  
 }
