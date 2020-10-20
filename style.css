@@ -26,12 +26,6 @@ body {
   animation-fill-mode: forwards;
 }
 
-.card.flipped {
-  background-color: blue;
-  opacity: 1;
-  transform: rotateY(0deg);
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
@@ -40,10 +34,10 @@ body {
   width: calc(70vh);
 }
 
-.grid > div::before {
-  content: "";
+.grid > div::after {
+  content: attr(theNumber);
   padding-bottom: 100%;
-  display: block;
+  display: flex;
 }
 
 body {
@@ -223,16 +217,48 @@ p.glow {
   text-align: center;
   color: gray;
 }
-
+.hidden,
+.bomb,
+.flag {
+  background-position: bottom;
+  background-size: cover;
+}
 .hidden {
   background-color: green;
 }
 .bomb {
-  background-color: yellow;
+  background-image: url("images/bomb.jpg");
 }
 .flag {
-  background-color: blue;
+  background-image: url("images/flag_icon.png");
 }
 .number {
   background-color: aqua;
+}
+.the0 {
+  background-image: url("images/the0.jpg");
+}
+.the1 {
+  background-image: url("images/the1.jpg");
+}
+.the2 {
+  background-image: url("images/the2.jpg");
+}
+.the3 {
+  background-image: url("images/the3.jpg");
+}
+.the4 {
+  background-image: url("images/the4.jpg");
+}
+.the5 {
+  background-image: url("images/the5.jpg");
+}
+.the6 {
+  background-image: url("images/the6.jpg");
+}
+.the7 {
+  background-image: url("images/the7.jpg");
+}
+.the8 {
+  background-image: url("images/the7.jpg");
 }

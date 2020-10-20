@@ -201,7 +201,8 @@ function prepare_dom(game) {
     card.addEventListener("click", () => {
       card_click_cb(game, i);
     });
-    card.addEventListener("contextmenu", () => {
+    card.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
       tapholdHandler(game, card, i);
     });
 
@@ -227,7 +228,7 @@ function render(s) {
       } else if (s.onoff[ind] == "M") {
         card.classList.add("bomb");
       } else {
-        card.innerHTML = s.onoff[ind];
+        card.classList.add("the"+s.onoff[ind]);
         card.classList.add("number");
       }
     }
@@ -290,12 +291,12 @@ function card_click_cb(game, ind) {
   // check if we won and activate overlay if we did
   if (s.done == true && s.exploded == false) {
     document.querySelector("#overlay").classList.toggle("active");
-    document.querySelector(".glow").innerHTML = "Congratulations, you won!!!";
+    document.querySelector(".glow").innerHTML = "Congratulations, you won!!! \n It took you " + seconds + " seconds. \n Click anywhere to start a new game.";
     clearInterval(intervalID);
   } else if (s.done == true && s.exploded == true) {
     document.querySelector("#overlay").classList.toggle("active");
     document.querySelector(".glow").innerHTML =
-      "Sorry, you lost. You hit a bomb";
+      "Sorry, you lost. You hit a bomb. \n It took you " + seconds + " seconds. \n Click anywhere to start a new game.";
     clearInterval(intervalID);
   }
 }
