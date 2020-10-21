@@ -28,7 +28,7 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
+  grid-template-columns: repeat(14, 1fr);
   border-radius: 10px;
   padding: 5px;
   width: calc(70vh);
@@ -261,4 +261,12 @@ p.glow {
 }
 .the8 {
   background-image: url("images/the7.jpg");
+}
+
+@media only screen and (min-device-width: 480px) and (max-device-width: 1000px) and (orientation: landscape) {
+  .grid {
+    border-radius: 10px;
+    padding: 5px;
+    width: calc(90vh);
+  }
 }
