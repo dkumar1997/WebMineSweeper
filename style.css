@@ -1,3 +1,8 @@
+/*
+//Some of this code camr from came from  https://gitlab.com/seng513/lights-out-game
+// The author:Pavol Federl
+*/
+
 * {
   font-family: Impact;
   font-size: 1.3rem;
@@ -35,7 +40,7 @@ body {
 }
 
 .grid > div::after {
-  content: attr(theNumber);
+  content: "";
   padding-bottom: 100%;
   display: flex;
 }
@@ -267,6 +272,9 @@ p.glow {
   .grid {
     border-radius: 10px;
     padding: 5px;
-    width: calc(90vh);
+    width: calc(95vh);
+  }
+  p.big {
+    font-size: 1rem !important;
   }
 }

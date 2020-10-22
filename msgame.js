@@ -1,3 +1,8 @@
+
+//The game engine came from https://repl.it/@pfederl/Minesweeper-Game-Engine 
+// The author:Pavol Federl
+
+
 "use strict";
 window.addEventListener("load", main);
 
